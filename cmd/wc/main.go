@@ -37,7 +37,6 @@ func main() {
 			fmt.Fprintln(os.Stderr, err)
 			continue
 		}
-		defer file.Close()
 
 		// initialize variables for metrics to be collected
 		lc, wc, bc := 0, 0, 0
@@ -64,6 +63,9 @@ func main() {
 		totalLc += lc
 		totalWc += wc
 		totalBc += bc
+
+		// close file at the end of current iteration to avoid maxing file descriptors
+		file.Close()
 	}
 
 	// neatly log the total stats to the console. |lc		wc		bc|

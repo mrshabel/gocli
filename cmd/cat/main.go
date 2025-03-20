@@ -38,14 +38,17 @@ func main() {
 			fmt.Fprintln(os.Stderr, err)
 			continue
 		}
-		defer file.Close()
 
 		// read file contents in chunks and write to a buffer. this is done to ensure that huge files are not loaded into memory at once
 		if _, err := io.Copy(os.Stdout, file); err != nil {
 			fmt.Fprintln(os.Stderr, "failed to read contents of file", err)
 			// proceed to next file
+			file.Close()
 			continue
 		}
+
+		// close file in current iteration to avoid maxing out file descriptors
+		file.Close()
 	}
 
 }
